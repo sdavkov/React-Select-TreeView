@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import SelectTreeView from './SelectTreeView/TreeView';
+import SelectTreeView from './SelectTreeView';
 import { SelectTreeViewItem } from './SelectTreeView/types';
 
 

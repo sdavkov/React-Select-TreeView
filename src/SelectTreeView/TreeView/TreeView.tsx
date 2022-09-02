@@ -1,10 +1,8 @@
-import React, { FC, useEffect, useState } from 'react'
-import { setParent } from '../utils/treeNode';
+import React, { FC, useState } from 'react'
 import styles from './TreeView.module.scss'
 import Toolbar from '../Toolbar/Toolbar';
 import TreeNode from '../TreeNode/TreeNode';
-import { SelectTreeViewItem } from '../types';
-import { SelectTreeViewContext } from '../context/SelectTreeViewContext';
+import { SelectTreeViewContext } from '../context/context';
 
 type Props = {
   placeholder: string;
@@ -16,7 +14,7 @@ const TreeView: FC<Props> = ({ placeholder, multiSelect = false }) => {
 
   const toggle = () => setOpen(!open);
 
-  const treeViewContext = SelectTreeViewContext;
+  const {treeViewItems} = React.useContext(SelectTreeViewContext);
 
   return (
     <div className={styles.wrapper}>
@@ -36,7 +34,7 @@ const TreeView: FC<Props> = ({ placeholder, multiSelect = false }) => {
         <div className={styles.dropdown}>
           <Toolbar />
           <ul>
-            {treeViewContext.treeViewItems.map((item => (
+            {treeViewItems.map((item => (
               <TreeNode lavel={0} key={item.value} node={item} />
             )))}
           </ul>

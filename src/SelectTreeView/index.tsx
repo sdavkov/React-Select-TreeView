@@ -1,5 +1,5 @@
-import React, { FC, useEffect } from 'react'
-import { SelectTreeViewProvider } from './context/SelectTreeViewContext';
+import React, { FC } from 'react'
+import { SelectTreeViewProvider } from './context/context';
 import TreeView from './TreeView/TreeView'
 import { SelectTreeViewItem } from './types';
 

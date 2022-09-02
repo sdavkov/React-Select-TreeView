@@ -4,7 +4,7 @@ import styles from './Toggle.module.scss'
 type Props = {
 	expanded: boolean;
 	isLeaf: boolean;
-	onToggle: ()=> void;
+	onToggle: (checked: boolean)=> void;
 }
 
 const Toggle: FC<Props> = ({expanded, isLeaf, onToggle}) => {
@@ -12,7 +12,7 @@ const Toggle: FC<Props> = ({expanded, isLeaf, onToggle}) => {
 	const toggleCx = [styles.toggle, expanded && styles.expanded, !expanded && styles.collapsed, isLeaf && styles.hidden].filter(Boolean).join(' ')
 
 	return (
-		<div onClick={onToggle} className={toggleCx}></div>
+		<div onClick={() => onToggle(expanded)} className={toggleCx}></div>
 	)
 }
 

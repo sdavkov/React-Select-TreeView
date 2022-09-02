@@ -1,8 +1,8 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import { SelectTreeViewItem } from '../types'
 import Toggle from '../Toggle/Toggle';
 import styles from './TreeNode.module.scss'
-import { checkSelectedNeighbours, deselectChildren, deselectParents, selectChildren, selectParents, setParent, findTreeNode } from './utils/treeNode';
+import { SelectTreeViewContext } from '../context/context';
 
 type Props = {
 	node: SelectTreeViewItem;
@@ -11,43 +11,24 @@ type Props = {
 
 const TreeNode: FC<Props> = ({ node, lavel }) => {
 
-	function onExpanded(value: string, lavel: number) {
-		const expandedItem = findTreeNode(treeViewItems, value, lavel);
-		if (expandedItem) {
-		  expandedItem.expanded = !expandedItem.expanded;
-		  setTreeViewItems([...treeViewItems]);
-		}
-	  }
-	
-	  function onSelected(value: string, lavel: number) {
-		const item = findTreeNode(treeViewItems, value, lavel);
-		if (item) {
-		  item.selected = !item.selected;
-		  if (item.selected) {
-			selectParents(item);
-			item.children && selectChildren(item.children);
-		  }
-		  else {
-			item.children && deselectChildren(item.children);
-			!checkSelectedNeighbours(item) && deselectParents(item);
-		  }
-		  setTreeViewItems([...treeViewItems]);
-		}
-	  }
+	const { onExpandTreeNode, onCollapseTreeNode, onSelectTreeNode, onDeselectTreeNode } = useContext(SelectTreeViewContext);
 
-	function onNodeToggle() {
-		onExpanded(node.value, lavel);
+	function onNodeToggle(checked: boolean) {
+		if (checked)
+			onCollapseTreeNode({ value: node.value, lavel })
+		else
+			onExpandTreeNode({ value: node.value, lavel })
 	}
 
 	function changeSelection() {
-		onSelected(node.value, lavel);
+		node.selected ? onDeselectTreeNode({ value: node.value, lavel }) : onSelectTreeNode({ value: node.value, lavel });
 	}
 
 	function onNodeClick() {
 		if (isLeaf) {
-			changeSelection()
+			changeSelection();
 		} else {
-			onNodeToggle();
+			onNodeToggle(!!node.expanded);
 		}
 	}
 
@@ -64,7 +45,7 @@ const TreeNode: FC<Props> = ({ node, lavel }) => {
 			<div className={childrenCx}>
 				<ul>
 					{node.children && node.children.map(item => (
-						<TreeNode setTreeViewItems={setTreeViewItems} lavel={lavel + 1} onExpanded={onExpanded} onSelected={onSelected} key={item.value} node={item} />
+						<TreeNode lavel={lavel + 1} key={item.value} node={item} />
 					))}
 				</ul>
 			</div>
