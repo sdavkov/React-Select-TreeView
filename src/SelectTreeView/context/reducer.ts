@@ -1,5 +1,5 @@
 import { SelectTreeViewItem } from "../types";
-import { allDeselect, checkSelectedNeighbours, deselectChildren, deselectParents, expandAllChildren, findTreeNode, getAllSelectedBrances, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
+import { allDeselect, checkSelectedNeighbours, deselectChildren, deselectParents, expandAllChildren, findTreeNode, getAllSelectedBrances, getAllSelectedLeafs, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
 
 export enum Types {
 	Expand = 'EXPAND',
@@ -7,6 +7,7 @@ export enum Types {
 	Select = 'SELECT',
 	Deselect = 'DESELECT',
 	SetParents = 'SETPARENTS',
+	SetMultiselect = 'SETMULTISELECT',
 }
 
 type ActionMap<M extends { [index: string]: any }> = {
@@ -37,28 +38,11 @@ type SelectTreeViewPayload = {
 		value: string;
 		lavel: number;
 	};
-	[Types.SetParents]: undefined
+	[Types.SetMultiselect]: {
+		value: boolean;
+	};
+	[Types.SetParents]: undefined;
 }
-
-export const expandActionCreator = (payload: { value: string, lavel: number }) => ({
-	type: Types.Expand,
-	payload,
-})
-
-export const collapseActionCreator = (payload: { value: string, lavel: number }) => ({
-	type: Types.Collapse,
-	payload,
-})
-
-export const selectActionCreator = (payload: { value: string, lavel: number }) => ({
-	type: Types.Select,
-	payload,
-})
-
-export const deselectActionCreator = (payload: { value: string, lavel: number }) => ({
-	type: Types.Deselect,
-	payload,
-})
 
 export type SelectTreeViewActions = ActionMap<SelectTreeViewPayload>[keyof ActionMap<SelectTreeViewPayload>]
 
@@ -120,6 +104,20 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 			return { ...state };
 		case Types.SetParents:
 			setParent(state.treeViewItems)
+			return { ...state }
+		case Types.SetMultiselect:
+			state.multiselect = action.payload.value;
+			const selectedLeafs = getAllSelectedLeafs(state.treeViewItems);
+			if (!state.multiselect && selectedLeafs.length > 0) {
+				allDeselect(state.treeViewItems);
+				if (selectedLeafs[0].lavel) {
+					const item = findTreeNode(state.treeViewItems, selectedLeafs[0].value, selectedLeafs[0].lavel);
+					if (item) {
+						item.selected = true;
+						selectParents(item);
+					}
+				}
+			}
 			return { ...state }
 		default:
 			return state;

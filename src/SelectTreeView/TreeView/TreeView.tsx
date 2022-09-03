@@ -34,7 +34,7 @@ const TreeView: FC<Props> = ({ placeholder }) => {
           <Toolbar />
           <ul>
             {treeViewItems.map((item => (
-              <TreeNode lavel={0} key={item.value} node={item} />
+              <TreeNode key={item.value} node={item} />
             )))}
           </ul>
         </div>

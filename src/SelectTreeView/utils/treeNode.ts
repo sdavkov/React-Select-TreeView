@@ -59,12 +59,13 @@ export function checkSelectedNeighbours(item: SelectTreeViewItem) {
 	return false;
 }
 
-export function setParent(items: SelectTreeViewItem[], parent: SelectTreeViewItem | undefined = undefined) {
+export function setParent(items: SelectTreeViewItem[], parent: SelectTreeViewItem | undefined = undefined, lavel: number = 0) {
 	items.forEach(item => {
 		if (parent)
 			item.parent = parent;
+		item.lavel = lavel;
 		if (item.children) {
-			setParent(item.children, item)
+			setParent(item.children, item, lavel + 1)
 		}
 	});
 }
@@ -93,10 +94,10 @@ export function getAllSelectedBrances(items: SelectTreeViewItem[]) {
 	const selectedLeafs = getAllSelectedLeafs(items);
 	const allSelectedBranches: SelectTreeViewItem[] = [];
 	selectedLeafs.forEach(item => {
-			while (item.parent) {
-				item = { ...item.parent, children: [item] };
-			}
-			allSelectedBranches.push(item);
+		while (item.parent) {
+			item = { ...item.parent, children: [item] };
+		}
+		allSelectedBranches.push(item);
 
 	})
 	return allSelectedBranches;
@@ -104,7 +105,8 @@ export function getAllSelectedBrances(items: SelectTreeViewItem[]) {
 
 export function findTreeNode(
 	items: SelectTreeViewItem[] | undefined,
-	value: string, lavel: number,
+	value: string,
+	lavel: number,
 	currentlavel: number = 0
 ): SelectTreeViewItem | undefined {
 	if (!items)

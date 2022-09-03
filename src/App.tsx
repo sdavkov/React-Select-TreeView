@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import SelectTreeView from './SelectTreeView';
 import { SelectTreeViewItem } from './SelectTreeView/types';
@@ -193,10 +193,16 @@ const items: SelectTreeViewItem[] = [
 
 function App() {
 
+  const [isMulti, setIsMulti] = useState(false)
+
   return (
     <div className="container">
+      <div className='toolbar'>
+        <label htmlFor="isMulti">Мультиселект</label>
+        <input type='checkbox' name='isMulti' checked={isMulti} onChange={() => setIsMulti(!isMulti)} title='Мультирежим'/>
+      </div>
       <SelectTreeView
-        multiselect={false}
+        multiselect={isMulti}
         placeholder='Select Tree View'
         items={items}
       />

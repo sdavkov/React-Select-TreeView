@@ -1,6 +1,6 @@
 import React, { createContext, FC, useCallback, useEffect, useReducer } from "react";
 import { SelectTreeViewItem } from "../types";
-import { collapseActionCreator, deselectActionCreator, expandActionCreator, selectActionCreator, State, treeViewReducer, Types } from "./reducer";
+import { State, treeViewReducer, Types } from "./reducer";
 
 const initialState: State = {
 	treeViewItems: [],
@@ -36,27 +36,31 @@ export const SelectTreeViewProvider: FC<Props> = ({ items, children , multiselec
 	const [state, dispatch] = useReducer(treeViewReducer, {treeViewItems: items, multiselect, onChangeSelected, selectedTreeViewItems: [] })
 
 	const onExpandTreeNode = useCallback((payload: { value: string, lavel: number }) => {
-		dispatch(expandActionCreator(payload));
+		dispatch({type: Types.Expand, payload});
 	}, [dispatch]);
 
 	const onCollapseTreeNode = useCallback((payload: { value: string, lavel: number }) => {
-		dispatch(collapseActionCreator(payload));
+		dispatch({type: Types.Collapse, payload});
 	},
 		[dispatch]);
 
 	const onSelectTreeNode = useCallback((payload: { value: string, lavel: number }) => {
-		dispatch(selectActionCreator(payload));
+		dispatch({type: Types.Select, payload});
 	},
 		[dispatch]);
 
 	const onDeselectTreeNode = useCallback((payload: { value: string, lavel: number }) => {
-		dispatch(deselectActionCreator(payload));
+		dispatch({type: Types.Deselect, payload});
 	},
 		[dispatch]);
 
 	useEffect(() => {
 		dispatch({ type: Types.SetParents })
 	}, [dispatch])
+
+	useEffect(() => {
+		dispatch({ type: Types.SetMultiselect, payload: {value: multiselect} })
+	}, [dispatch, multiselect])
 
 	const selectTreeViewMethods = { onExpandTreeNode, onCollapseTreeNode, onSelectTreeNode, onDeselectTreeNode };
 

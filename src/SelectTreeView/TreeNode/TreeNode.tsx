@@ -6,22 +6,21 @@ import { SelectTreeViewContext } from '../context/context';
 
 type Props = {
 	node: SelectTreeViewItem;
-	lavel: number;
 }
 
-const TreeNode: FC<Props> = ({ node, lavel }) => {
+const TreeNode: FC<Props> = ({ node }) => {
 
 	const { onExpandTreeNode, onCollapseTreeNode, onSelectTreeNode, onDeselectTreeNode } = useContext(SelectTreeViewContext);
 
 	function onNodeToggle(checked: boolean) {
 		if (checked)
-			onCollapseTreeNode({ value: node.value, lavel })
+			onCollapseTreeNode({ value: node.value, lavel: node.lavel! })
 		else
-			onExpandTreeNode({ value: node.value, lavel })
+			onExpandTreeNode({ value: node.value, lavel: node.lavel! })
 	}
 
 	function changeSelection() {
-		node.selected ? onDeselectTreeNode({ value: node.value, lavel }) : onSelectTreeNode({ value: node.value, lavel });
+		node.selected ? onDeselectTreeNode({ value: node.value, lavel: node.lavel! }) : onSelectTreeNode({ value: node.value, lavel: node.lavel! });
 	}
 
 	function onNodeClick() {
@@ -45,7 +44,7 @@ const TreeNode: FC<Props> = ({ node, lavel }) => {
 			<div className={childrenCx}>
 				<ul>
 					{node.children && node.children.map(item => (
-						<TreeNode lavel={lavel + 1} key={item.value} node={item} />
+						<TreeNode key={item.value} node={item} />
 					))}
 				</ul>
 			</div>
