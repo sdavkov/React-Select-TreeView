@@ -1,5 +1,13 @@
 import { SelectTreeViewItem } from "../types";
-import { checkSelectedNeighbours, deselectChildren, deselectParents, findTreeNode, selectChildren, selectParents, setParent } from "../utils/treeNode";
+import { allDeselect, checkSelectedNeighbours, deselectChildren, deselectParents, findTreeNode, selectChildren, selectParents, setParent } from "../utils/treeNode";
+
+export enum Types {
+	Expand = 'EXPAND',
+	Collapse = 'COLLAPSE',
+	Select = 'SELECT',
+	Deselect = 'DESELECT',
+	SetParents = 'SETPARENTS',
+}
 
 type ActionMap<M extends { [index: string]: any }> = {
 	[Key in keyof M]: M[Key] extends undefined
@@ -11,14 +19,6 @@ type ActionMap<M extends { [index: string]: any }> = {
 		payload: M[Key];
 	}
 };
-
-export enum Types {
-	Expand = 'EXPAND',
-	Collapse = 'COLLAPSE',
-	Select = 'SELECT',
-	Deselect = 'DESELECT',
-	SetParents = 'SETPARENTS',
-}
 
 type SelectTreeViewPayload = {
 	[Types.Collapse]: {
@@ -62,40 +62,41 @@ export const deselectActionCreator = (payload: { value: string, lavel: number })
 
 export type SelectTreeViewActions = ActionMap<SelectTreeViewPayload>[keyof ActionMap<SelectTreeViewPayload>]
 
-export function treeViewReducer(state: SelectTreeViewItem[], action: SelectTreeViewActions) {
+export function treeViewReducer(state: {treeViewItems: SelectTreeViewItem[], multiselect: boolean}, action: SelectTreeViewActions) {
 	switch (action.type) {
 		case Types.Collapse:
-			const collapsedItem = findTreeNode(state, action.payload.value, action.payload.lavel);
+			const collapsedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
 			if (collapsedItem) {
 				collapsedItem.expanded = false;
 			}
-			return [...state];
+			return {...state};
 		case Types.Expand:
-			const expandedItem = findTreeNode(state, action.payload.value, action.payload.lavel);
+			const expandedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
 			if (expandedItem) {
 				expandedItem.expanded = true;
 			}
-			return [...state];
+			return {...state};
 		case Types.Select:
-			console.log('select')	
-			const selectedItem = findTreeNode(state, action.payload.value, action.payload.lavel);
+			const selectedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
 			if (selectedItem) {
+				if (!state.multiselect) 
+					allDeselect(state.treeViewItems);
 				selectedItem.selected = true;
 				selectParents(selectedItem);
 				selectedItem.children && selectChildren(selectedItem.children);
 			}
-			return [...state];
+			return {...state};
 		case Types.Deselect:
-		console.log('deselect')	
-		const deselectedItem = findTreeNode(state, action.payload.value, action.payload.lavel);
+		const deselectedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
 			if (deselectedItem) {
 				deselectedItem.selected = false;
 				deselectedItem.children && deselectChildren(deselectedItem.children);
 				!checkSelectedNeighbours(deselectedItem) && deselectParents(deselectedItem);
 			}
-			return [...state];
+			return {...state};
 		case Types.SetParents:
-			return [...setParent(state)]
+			setParent(state.treeViewItems)
+			return {...state}
 		default:
 			return state;
 	}

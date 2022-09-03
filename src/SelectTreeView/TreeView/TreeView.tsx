@@ -6,10 +6,9 @@ import { SelectTreeViewContext } from '../context/context';
 
 type Props = {
   placeholder: string;
-  multiSelect?: boolean;
 }
 
-const TreeView: FC<Props> = ({ placeholder, multiSelect = false }) => {
+const TreeView: FC<Props> = ({ placeholder }) => {
   const [open, setOpen] = useState(false);
 
   const toggle = () => setOpen(!open);

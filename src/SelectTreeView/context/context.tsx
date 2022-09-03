@@ -4,10 +4,12 @@ import { collapseActionCreator, deselectActionCreator, expandActionCreator, sele
 
 type InitialStateType = {
 	treeViewItems: SelectTreeViewItem[];
+	multiselect: boolean;
 }
 
 const initialState: InitialStateType = {
-	treeViewItems: []
+	treeViewItems: [],
+	multiselect: false,
 }
 
 type TActions = {
@@ -28,11 +30,12 @@ export const SelectTreeViewContext = createContext<InitialStateType & TActions>(
 type Props = {
 	children?: React.ReactNode;
 	items: SelectTreeViewItem[];
+	multiselect?: boolean;
 };
 
-export const SelectTreeViewProvider: FC<Props> = ({ items, children }) => {
+export const SelectTreeViewProvider: FC<Props> = ({ items, children , multiselect = false}) => {
 
-	const [state, dispatch] = useReducer(treeViewReducer, items)
+	const [state, dispatch] = useReducer(treeViewReducer, {treeViewItems: items, multiselect})
 
 	const onExpandTreeNode = useCallback((payload: { value: string, lavel: number }) => {
 		dispatch(expandActionCreator(payload));
@@ -59,7 +62,7 @@ export const SelectTreeViewProvider: FC<Props> = ({ items, children }) => {
 
 	const selectTreeViewMethods = { onExpandTreeNode, onCollapseTreeNode, onSelectTreeNode, onDeselectTreeNode };
 
-	const value = { treeViewItems: state, ...selectTreeViewMethods };
+	const value = { ...state, ...selectTreeViewMethods };
 
 	return (
 		<SelectTreeViewContext.Provider value={value}>

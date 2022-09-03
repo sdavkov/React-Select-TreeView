@@ -6,14 +6,14 @@ import { SelectTreeViewItem } from './types';
 type Props = {
 	placeholder: string;
 	items: SelectTreeViewItem[];
-	multiSelect?: boolean;
+	multiselect?: boolean;
 	onSelected?: (items: SelectTreeViewItem[]) => void;
 }
 
-const SelectTreeView: FC<Props> = ({ placeholder, items, multiSelect = false }) => {
+const SelectTreeView: FC<Props> = ({ placeholder, items, multiselect = false }) => {
 	return (
-		<SelectTreeViewProvider items={items}>
-			<TreeView placeholder={placeholder} multiSelect={multiSelect} />
+		<SelectTreeViewProvider items={items} multiselect={multiselect}>
+			<TreeView placeholder={placeholder} />
 		</SelectTreeViewProvider>
 	)
 }

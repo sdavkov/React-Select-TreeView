@@ -51,6 +51,16 @@ export function setParent(items: SelectTreeViewItem[], parent: SelectTreeViewIte
 	return items;
 }
 
+export function allDeselect(items: SelectTreeViewItem[]) {
+	items.forEach(item => {
+		item.selected = false;
+		if (item.children) {
+			allDeselect(item.children)
+		}
+	});
+	return items;
+}
+
 export function findTreeNode(
     items: SelectTreeViewItem[] | undefined,
     value: string, lavel: number,

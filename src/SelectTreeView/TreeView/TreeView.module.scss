@@ -36,6 +36,8 @@
 		position: absolute;
 		z-index: 2;
 		top: 44px;
+		max-height: 50vh;
+		overflow: auto;
 
 		li {
 			list-style-type: none;
