@@ -9,6 +9,7 @@ export enum Types {
 	SetParents = 'SETPARENTS',
 	SetMultiselect = 'SETMULTISELECT',
 	SetIsOpen = 'SETISOPEN',
+	ClearSelectedItems = 'CLEARSELECTEDNITEMS',
 }
 
 type ActionMap<M extends { [index: string]: any }> = {
@@ -42,6 +43,7 @@ type SelectTreeViewPayload = {
 	[Types.SetMultiselect]: boolean;
 	[Types.SetIsOpen]: boolean;
 	[Types.SetParents]: undefined;
+	[Types.ClearSelectedItems]: undefined;
 }
 
 export type SelectTreeViewActions = ActionMap<SelectTreeViewPayload>[keyof ActionMap<SelectTreeViewPayload>]
@@ -120,6 +122,9 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 			return { ...state }
 		case Types.SetIsOpen:
 			return { ...state, isOpen: action.payload }
+		case Types.ClearSelectedItems:
+			allDeselect(state.treeViewItems);
+			return {...state, selectedTreeViewItems: []}
 		default:
 			return state;
 	}

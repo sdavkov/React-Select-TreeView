@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC } from 'react'
 import styles from './TreeView.module.scss'
 import Toolbar from '../Toolbar/Toolbar';
 import TreeNode from '../TreeNode/TreeNode';
@@ -10,12 +10,13 @@ type Props = {
 }
 
 const TreeView: FC<Props> = ({ placeholder }) => {
-  const { treeViewItems, selectedTreeViewItems, isOpen, setIsOpen, onChangeSelected } = React.useContext(SelectTreeViewContext);
+  const { treeViewItems, selectedTreeViewItems, isOpen, setIsOpen, clearSelectedTreeViewItems } = React.useContext(SelectTreeViewContext);
   const nodeRef = React.useRef(null)
 
-  useEffect(() => {
-    onChangeSelected && onChangeSelected(selectedTreeViewItems)
-  }, [selectedTreeViewItems, onChangeSelected])
+  function onClearSelectedTreeViewItems(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    event.stopPropagation();
+    clearSelectedTreeViewItems();
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -31,8 +32,13 @@ const TreeView: FC<Props> = ({ placeholder }) => {
             ))
           }
         </div>
-        <div className={styles.select__toggle}>
-          {isOpen ? 'Close' : 'Open'}
+        <div className={styles.select__toolbox}>
+          {selectedTreeViewItems.length > 0 &&
+            <div onClick={onClearSelectedTreeViewItems}>Clear</div>
+          }
+          <div className={styles.select__toggle}>
+            {isOpen ? 'Close' : 'Open'}
+          </div>
         </div>
       </div>
       <CSSTransition

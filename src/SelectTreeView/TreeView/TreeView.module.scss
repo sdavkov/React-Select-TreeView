@@ -27,8 +27,13 @@
 			align-items: center;
 		}
 
-		&__title--bold {
-			font-weight: bold;
+		&__toolbox {
+			display: flex;
+			align-items: center;
+
+			& > div {
+				margin-left: 10px
+			}
 		}
 	}
 
