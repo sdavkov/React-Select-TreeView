@@ -44,10 +44,19 @@
 		max-height: 50vh;
 		overflow: auto;
 
-		li {
-			list-style-type: none;
-			padding: 10px 0px 10px 0px;
-			width: 100%;
+		&.enter {
+			opacity: 0;
+		}
+		&.enter_active {
+			opacity: 1;
+			transition: opacity 200ms;
+		}
+		&.exit {
+			opacity: 1;
+		}
+		&.exit_active {
+			opacity: 0;
+			transition: opacity 200ms;
 		}
 	}
 }

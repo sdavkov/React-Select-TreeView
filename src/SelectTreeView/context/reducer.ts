@@ -8,6 +8,7 @@ export enum Types {
 	Deselect = 'DESELECT',
 	SetParents = 'SETPARENTS',
 	SetMultiselect = 'SETMULTISELECT',
+	SetIsOpen = 'SETISOPEN',
 }
 
 type ActionMap<M extends { [index: string]: any }> = {
@@ -38,9 +39,8 @@ type SelectTreeViewPayload = {
 		value: string;
 		lavel: number;
 	};
-	[Types.SetMultiselect]: {
-		value: boolean;
-	};
+	[Types.SetMultiselect]: boolean;
+	[Types.SetIsOpen]: boolean;
 	[Types.SetParents]: undefined;
 }
 
@@ -50,7 +50,7 @@ export type State = {
 	treeViewItems: TreeViewItem[];
 	selectedTreeViewItems: SelectedTreeViewItem[];
 	multiselect: boolean;
-	onChangeSelected?: (items: TreeViewItem[]) => void;
+	isOpen: boolean;
 }
 
 export function treeViewReducer(state: State, action: SelectTreeViewActions) {
@@ -89,7 +89,6 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 					expandAllChildren(selectedItem);
 				}
 				state.selectedTreeViewItems = getAllSelectedBrances(state.treeViewItems);
-				state.onChangeSelected && state.onChangeSelected(state.selectedTreeViewItems);
 			}
 			return { ...state };
 		case Types.Deselect:
@@ -99,14 +98,13 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 				deselectedItem.children && deselectChildren(deselectedItem.children);
 				!checkSelectedNeighbours(deselectedItem) && deselectParents(deselectedItem);
 				state.selectedTreeViewItems = getAllSelectedBrances(state.treeViewItems);
-				state.onChangeSelected && state.onChangeSelected(state.selectedTreeViewItems);
 			}
 			return { ...state };
 		case Types.SetParents:
 			setParent(state.treeViewItems)
 			return { ...state }
 		case Types.SetMultiselect:
-			state.multiselect = action.payload.value;
+			state.multiselect = action.payload;
 			const selectedLeafs = getAllSelectedLeafs(state.treeViewItems);
 			if (!state.multiselect && selectedLeafs.length > 0) {
 				allDeselect(state.treeViewItems);
@@ -118,9 +116,10 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 					}
 				}
 				state.selectedTreeViewItems = getAllSelectedBrances(state.treeViewItems);
-				state.onChangeSelected && state.onChangeSelected(state.selectedTreeViewItems);
 			}
 			return { ...state }
+		case Types.SetIsOpen:
+			return { ...state, isOpen: action.payload }
 		default:
 			return state;
 	}

@@ -7,6 +7,7 @@ const initialState: State = {
 	selectedTreeViewItems: [],
 	multiselect: false,
 	onChangeSelected: (items: TreeViewItem[]) => null,
+	isOpen: false,
 }
 
 type TActions = {
@@ -14,6 +15,7 @@ type TActions = {
 	onCollapseTreeNode: (payload: { value: string, lavel: number }) => void;
 	onSelectTreeNode: (payload: { value: string, lavel: number }) => void;
 	onDeselectTreeNode: (payload: { value: string, lavel: number }) => void;
+	setIsOpen: (payload: boolean) => void;
 };
 
 export const SelectTreeViewContext = createContext<State & TActions>({
@@ -21,7 +23,8 @@ export const SelectTreeViewContext = createContext<State & TActions>({
 	onExpandTreeNode: (payload: { value: string, lavel: number }) => null,
 	onCollapseTreeNode: (payload: { value: string, lavel: number }) => null,
 	onSelectTreeNode: (payload: { value: string, lavel: number }) => null,
-	onDeselectTreeNode: (payload: { value: string, lavel: number }) => null
+	onDeselectTreeNode: (payload: { value: string, lavel: number }) => null,
+	setIsOpen: (payload: boolean) => null,
 });
 
 type Props = {
@@ -31,26 +34,31 @@ type Props = {
 	onChangeSelected?: (items: SelectedTreeViewItem[]) => void;
 };
 
-export const SelectTreeViewProvider: FC<Props> = ({ items, children , multiselect = false, onChangeSelected}) => {
+export const SelectTreeViewProvider: FC<Props> = ({ items, children, multiselect = false, onChangeSelected }) => {
 
-	const [state, dispatch] = useReducer(treeViewReducer, {treeViewItems: items, multiselect, onChangeSelected, selectedTreeViewItems: [] })
+	const [state, dispatch] = useReducer(treeViewReducer, { treeViewItems: items, multiselect, selectedTreeViewItems: [], isOpen: false })
 
 	const onExpandTreeNode = useCallback((payload: { value: string, lavel: number }) => {
-		dispatch({type: Types.Expand, payload});
+		dispatch({ type: Types.Expand, payload });
 	}, [dispatch]);
 
 	const onCollapseTreeNode = useCallback((payload: { value: string, lavel: number }) => {
-		dispatch({type: Types.Collapse, payload});
+		dispatch({ type: Types.Collapse, payload });
 	},
 		[dispatch]);
 
 	const onSelectTreeNode = useCallback((payload: { value: string, lavel: number }) => {
-		dispatch({type: Types.Select, payload});
+		dispatch({ type: Types.Select, payload });
 	},
 		[dispatch]);
 
 	const onDeselectTreeNode = useCallback((payload: { value: string, lavel: number }) => {
-		dispatch({type: Types.Deselect, payload});
+		dispatch({ type: Types.Deselect, payload });
+	},
+		[dispatch]);
+
+	const setIsOpen = useCallback((payload: boolean) => {
+		dispatch({ type: Types.SetIsOpen, payload });
 	},
 		[dispatch]);
 
@@ -59,12 +67,12 @@ export const SelectTreeViewProvider: FC<Props> = ({ items, children , multiselec
 	}, [dispatch])
 
 	useEffect(() => {
-		dispatch({ type: Types.SetMultiselect, payload: {value: multiselect} })
+		dispatch({ type: Types.SetMultiselect, payload: multiselect })
 	}, [dispatch, multiselect])
 
-	const selectTreeViewMethods = { onExpandTreeNode, onCollapseTreeNode, onSelectTreeNode, onDeselectTreeNode };
+	const selectTreeViewMethods = { onExpandTreeNode, onCollapseTreeNode, onSelectTreeNode, onDeselectTreeNode, setIsOpen };
 
-	const value = { ...state, ...selectTreeViewMethods };
+	const value = { ...state, ...selectTreeViewMethods, onChangeSelected };
 
 	return (
 		<SelectTreeViewContext.Provider value={value}>
