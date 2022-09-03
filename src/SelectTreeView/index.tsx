@@ -1,13 +1,13 @@
 import React, { FC } from 'react'
 import { SelectTreeViewProvider } from './context/context';
 import TreeView from './TreeView/TreeView'
-import { SelectTreeViewItem } from './types';
+import { TreeViewItem } from './types';
 
 type Props = {
 	placeholder: string;
-	items: SelectTreeViewItem[];
+	items: TreeViewItem[];
 	multiselect?: boolean;
-	onChangeSelected?: (items: SelectTreeViewItem[]) => void;
+	onChangeSelected?: (items: TreeViewItem[]) => void;
 }
 
 const SelectTreeView: FC<Props> = ({ placeholder, items, multiselect = false, onChangeSelected }) => {

@@ -1,4 +1,4 @@
-import { SelectedTreeViewItem, SelectTreeViewItem } from "../types";
+import { SelectedTreeViewItem, TreeViewItem } from "../types";
 import { allDeselect, checkSelectedNeighbours, deselectChildren, deselectParents, expandAllChildren, findTreeNode, getAllSelectedBrances, getAllSelectedLeafs, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
 
 export enum Types {
@@ -47,10 +47,10 @@ type SelectTreeViewPayload = {
 export type SelectTreeViewActions = ActionMap<SelectTreeViewPayload>[keyof ActionMap<SelectTreeViewPayload>]
 
 export type State = {
-	treeViewItems: SelectTreeViewItem[];
+	treeViewItems: TreeViewItem[];
 	selectedTreeViewItems: SelectedTreeViewItem[];
 	multiselect: boolean;
-	onChangeSelected?: (items: SelectTreeViewItem[]) => void;
+	onChangeSelected?: (items: TreeViewItem[]) => void;
 }
 
 export function treeViewReducer(state: State, action: SelectTreeViewActions) {

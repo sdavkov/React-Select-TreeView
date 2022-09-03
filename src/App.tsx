@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './App.css';
 import SelectTreeView from './SelectTreeView';
-import { SelectTreeViewItem } from './SelectTreeView/types';
+import { TreeViewItem } from './SelectTreeView/types';
 
 
 
-const items: SelectTreeViewItem[] = [
+const items: TreeViewItem[] = [
   {
     "label": "Agro Owner",
     "value": "103",
@@ -193,7 +193,7 @@ const items: SelectTreeViewItem[] = [
 
 function App() {
   const [isMulti, setIsMulti] = useState(false)
-  const [selectedItems, setSelectedItems] = useState<SelectTreeViewItem[]>([])
+  const [selectedItems, setSelectedItems] = useState<TreeViewItem[]>([])
   return (
     <div className="container">
       <div className='toolbar'>

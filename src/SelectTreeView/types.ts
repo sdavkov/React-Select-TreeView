@@ -1,15 +1,15 @@
-export type SelectTreeViewItem = {
+export type TreeViewItem = {
 	label: string;
 	value: string;
 	lavel?: number;
 	selected?: boolean;
 	expanded?: boolean;
-	parent?: SelectTreeViewItem;
-	children?: SelectTreeViewItem[];
+	parent?: TreeViewItem;
+	children?: TreeViewItem[];
 }
 
 export type SelectedTreeViewItem = {
 	label: string;
 	value: string;
-	children?: SelectTreeViewItem[];
+	children?: TreeViewItem[];
 }

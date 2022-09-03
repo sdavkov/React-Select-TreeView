@@ -1,12 +1,12 @@
 import React, { createContext, FC, useCallback, useEffect, useReducer } from "react";
-import { SelectedTreeViewItem, SelectTreeViewItem } from "../types";
+import { SelectedTreeViewItem, TreeViewItem } from "../types";
 import { State, treeViewReducer, Types } from "./reducer";
 
 const initialState: State = {
 	treeViewItems: [],
 	selectedTreeViewItems: [],
 	multiselect: false,
-	onChangeSelected: (items: SelectTreeViewItem[]) => null,
+	onChangeSelected: (items: TreeViewItem[]) => null,
 }
 
 type TActions = {
@@ -26,7 +26,7 @@ export const SelectTreeViewContext = createContext<State & TActions>({
 
 type Props = {
 	children?: React.ReactNode;
-	items: SelectTreeViewItem[];
+	items: TreeViewItem[];
 	multiselect?: boolean;
 	onChangeSelected?: (items: SelectedTreeViewItem[]) => void;
 };

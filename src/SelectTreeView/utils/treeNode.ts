@@ -1,6 +1,6 @@
-import { SelectedTreeViewItem, SelectTreeViewItem } from "../types";
+import { SelectedTreeViewItem, TreeViewItem } from "../types";
 
-export function selectParents(item: SelectTreeViewItem) {
+export function selectParents(item: TreeViewItem) {
 	let parent = item.parent;
 	while (parent) {
 		parent.selected = true;
@@ -8,7 +8,7 @@ export function selectParents(item: SelectTreeViewItem) {
 	}
 }
 
-export function deselectParents(item: SelectTreeViewItem) {
+export function deselectParents(item: TreeViewItem) {
 	let parent = item.parent;
 	while (parent) {
 		parent.selected = false;
@@ -16,7 +16,7 @@ export function deselectParents(item: SelectTreeViewItem) {
 	}
 }
 
-export function selectChildren(items: SelectTreeViewItem[]) {
+export function selectChildren(items: TreeViewItem[]) {
 	items.forEach(item => {
 		item.selected = true;
 		item.expanded = true;
@@ -24,19 +24,19 @@ export function selectChildren(items: SelectTreeViewItem[]) {
 	});
 }
 
-export function deselectChildren(items: SelectTreeViewItem[]) {
+export function deselectChildren(items: TreeViewItem[]) {
 	items.forEach(item => {
 		item.selected = false;
 		item.children && deselectChildren(item.children);
 	});
 }
 
-export function expandAllChildren(item: SelectTreeViewItem) {
+export function expandAllChildren(item: TreeViewItem) {
 	item.expanded = true;
 	item.children && item.children.forEach(expandAllChildren);
 }
 
-export function getLeafsCount(item: SelectTreeViewItem) {
+export function getLeafsCount(item: TreeViewItem) {
 	let count = 0;
 	if (item.children) {
 		item.children.forEach(child => {
@@ -49,7 +49,7 @@ export function getLeafsCount(item: SelectTreeViewItem) {
 	return count;
 }
 
-export function checkSelectedNeighbours(item: SelectTreeViewItem) {
+export function checkSelectedNeighbours(item: TreeViewItem) {
 	if (!item.parent || !item.parent.children) return false;
 	const neighbours = item.parent.children.filter(nb => nb.value !== item.value);
 	if (neighbours.length === 0) return false;
@@ -59,7 +59,7 @@ export function checkSelectedNeighbours(item: SelectTreeViewItem) {
 	return false;
 }
 
-export function setParent(items: SelectTreeViewItem[], parent: SelectTreeViewItem | undefined = undefined, lavel: number = 0) {
+export function setParent(items: TreeViewItem[], parent: TreeViewItem | undefined = undefined, lavel: number = 0) {
 	items.forEach(item => {
 		if (parent)
 			item.parent = parent;
@@ -70,7 +70,7 @@ export function setParent(items: SelectTreeViewItem[], parent: SelectTreeViewIte
 	});
 }
 
-export function allDeselect(items: SelectTreeViewItem[]) {
+export function allDeselect(items: TreeViewItem[]) {
 	items.forEach(item => {
 		item.selected = false;
 		if (item.children) {
@@ -79,7 +79,7 @@ export function allDeselect(items: SelectTreeViewItem[]) {
 	});
 }
 
-export function getAllSelectedLeafs(items: SelectTreeViewItem[], selectedLeafs: SelectTreeViewItem[] = []) {
+export function getAllSelectedLeafs(items: TreeViewItem[], selectedLeafs: TreeViewItem[] = []) {
 	items.forEach(item => {
 		if (!item.children && item.selected)
 			selectedLeafs.push({ ...item });
@@ -90,7 +90,7 @@ export function getAllSelectedLeafs(items: SelectTreeViewItem[], selectedLeafs: 
 	return selectedLeafs;
 }
 
-function convertToSelected(items: SelectTreeViewItem[]): SelectedTreeViewItem[] {
+function convertToSelected(items: TreeViewItem[]): SelectedTreeViewItem[] {
 	return items.map(item => (
 		{
 			value: item.value,
@@ -99,9 +99,9 @@ function convertToSelected(items: SelectTreeViewItem[]): SelectedTreeViewItem[] 
 		}))
 }
 
-export function getAllSelectedBrances(items: SelectTreeViewItem[]) {
+export function getAllSelectedBrances(items: TreeViewItem[]) {
 	const selectedLeafs = getAllSelectedLeafs(items);
-	const allSelectedBranches: SelectTreeViewItem[] = [];
+	const allSelectedBranches: TreeViewItem[] = [];
 	selectedLeafs.forEach(item => {
 		while (item.parent) {
 			item = { ...item.parent, children: [item] };
@@ -113,11 +113,11 @@ export function getAllSelectedBrances(items: SelectTreeViewItem[]) {
 }
 
 export function findTreeNode(
-	items: SelectTreeViewItem[] | undefined,
+	items: TreeViewItem[] | undefined,
 	value: string,
 	lavel: number,
 	currentlavel: number = 0
-): SelectTreeViewItem | undefined {
+): TreeViewItem | undefined {
 	if (!items)
 		return undefined;
 	if (currentlavel === lavel) {

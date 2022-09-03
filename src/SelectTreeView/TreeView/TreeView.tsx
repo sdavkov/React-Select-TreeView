@@ -13,7 +13,7 @@ const TreeView: FC<Props> = ({ placeholder }) => {
 
   const toggle = () => setOpen(!open);
 
-  const {treeViewItems} = React.useContext(SelectTreeViewContext);
+  const { treeViewItems, selectedTreeViewItems } = React.useContext(SelectTreeViewContext);
 
   return (
     <div className={styles.wrapper}>
@@ -23,7 +23,11 @@ const TreeView: FC<Props> = ({ placeholder }) => {
         onClick={() => toggle()}
       >
         <div className={styles.select__title}>
-          {placeholder}
+          {selectedTreeViewItems.length === 0 ? placeholder :
+            selectedTreeViewItems.map(item => (
+              <div>{item.label}</div>
+            ))
+          }
         </div>
         <div className={styles.select__toggle}>
           {open ? 'Close' : 'Open'}

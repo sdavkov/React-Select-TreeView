@@ -1,11 +1,11 @@
 import React, { FC, useContext } from 'react'
-import { SelectTreeViewItem } from '../types'
+import { TreeViewItem } from '../types'
 import Toggle from '../Toggle/Toggle';
 import styles from './TreeNode.module.scss'
 import { SelectTreeViewContext } from '../context/context';
 
 type Props = {
-	node: SelectTreeViewItem;
+	node: TreeViewItem;
 }
 
 const TreeNode: FC<Props> = ({ node }) => {
