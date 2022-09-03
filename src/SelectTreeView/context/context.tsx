@@ -6,7 +6,6 @@ const initialState: State = {
 	treeViewItems: [],
 	selectedTreeViewItems: [],
 	multiselect: false,
-	onChangeSelected: (items: TreeViewItem[]) => null,
 	isOpen: false,
 }
 
@@ -16,6 +15,7 @@ type TActions = {
 	onSelectTreeNode: (payload: { value: string, lavel: number }) => void;
 	onDeselectTreeNode: (payload: { value: string, lavel: number }) => void;
 	setIsOpen: (payload: boolean) => void;
+	onChangeSelected: (items: TreeViewItem[]) => void;
 };
 
 export const SelectTreeViewContext = createContext<State & TActions>({
@@ -25,6 +25,7 @@ export const SelectTreeViewContext = createContext<State & TActions>({
 	onSelectTreeNode: (payload: { value: string, lavel: number }) => null,
 	onDeselectTreeNode: (payload: { value: string, lavel: number }) => null,
 	setIsOpen: (payload: boolean) => null,
+	onChangeSelected: (items: TreeViewItem[]) => null,
 });
 
 type Props = {
