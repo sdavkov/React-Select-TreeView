@@ -1,4 +1,4 @@
-import { SelectTreeViewItem } from "../types";
+import { SelectedTreeViewItem, SelectTreeViewItem } from "../types";
 import { allDeselect, checkSelectedNeighbours, deselectChildren, deselectParents, expandAllChildren, findTreeNode, getAllSelectedBrances, getAllSelectedLeafs, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
 
 export enum Types {
@@ -48,7 +48,7 @@ export type SelectTreeViewActions = ActionMap<SelectTreeViewPayload>[keyof Actio
 
 export type State = {
 	treeViewItems: SelectTreeViewItem[];
-	selectedTreeViewItems: SelectTreeViewItem[];
+	selectedTreeViewItems: SelectedTreeViewItem[];
 	multiselect: boolean;
 	onChangeSelected?: (items: SelectTreeViewItem[]) => void;
 }
@@ -117,6 +117,8 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 						selectParents(item);
 					}
 				}
+				state.selectedTreeViewItems = getAllSelectedBrances(state.treeViewItems);
+				state.onChangeSelected && state.onChangeSelected(state.selectedTreeViewItems);
 			}
 			return { ...state }
 		default:

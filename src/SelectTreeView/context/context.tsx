@@ -1,5 +1,5 @@
 import React, { createContext, FC, useCallback, useEffect, useReducer } from "react";
-import { SelectTreeViewItem } from "../types";
+import { SelectedTreeViewItem, SelectTreeViewItem } from "../types";
 import { State, treeViewReducer, Types } from "./reducer";
 
 const initialState: State = {
@@ -28,7 +28,7 @@ type Props = {
 	children?: React.ReactNode;
 	items: SelectTreeViewItem[];
 	multiselect?: boolean;
-	onChangeSelected?: (items: SelectTreeViewItem[]) => void;
+	onChangeSelected?: (items: SelectedTreeViewItem[]) => void;
 };
 
 export const SelectTreeViewProvider: FC<Props> = ({ items, children , multiselect = false, onChangeSelected}) => {

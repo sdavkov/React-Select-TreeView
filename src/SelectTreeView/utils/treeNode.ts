@@ -1,4 +1,4 @@
-import { SelectTreeViewItem } from "../types";
+import { SelectedTreeViewItem, SelectTreeViewItem } from "../types";
 
 export function selectParents(item: SelectTreeViewItem) {
 	let parent = item.parent;
@@ -90,6 +90,15 @@ export function getAllSelectedLeafs(items: SelectTreeViewItem[], selectedLeafs: 
 	return selectedLeafs;
 }
 
+function convertToSelected(items: SelectTreeViewItem[]): SelectedTreeViewItem[] {
+	return items.map(item => (
+		{
+			value: item.value,
+			label: item.label,
+			children: item.children ? convertToSelected(item.children) : undefined,
+		}))
+}
+
 export function getAllSelectedBrances(items: SelectTreeViewItem[]) {
 	const selectedLeafs = getAllSelectedLeafs(items);
 	const allSelectedBranches: SelectTreeViewItem[] = [];
@@ -100,7 +109,7 @@ export function getAllSelectedBrances(items: SelectTreeViewItem[]) {
 		allSelectedBranches.push(item);
 
 	})
-	return allSelectedBranches;
+	return convertToSelected(allSelectedBranches);
 }
 
 export function findTreeNode(

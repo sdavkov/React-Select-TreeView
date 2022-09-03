@@ -6,4 +6,10 @@ export type SelectTreeViewItem = {
 	expanded?: boolean;
 	parent?: SelectTreeViewItem;
 	children?: SelectTreeViewItem[];
-  }
+}
+
+export type SelectedTreeViewItem = {
+	label: string;
+	value: string;
+	children?: SelectTreeViewItem[];
+}

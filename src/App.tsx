@@ -192,20 +192,25 @@ const items: SelectTreeViewItem[] = [
 ];
 
 function App() {
-
   const [isMulti, setIsMulti] = useState(false)
-
+  const [selectedItems, setSelectedItems] = useState<SelectTreeViewItem[]>([])
   return (
     <div className="container">
       <div className='toolbar'>
         <label htmlFor="isMulti">Мультиселект</label>
-        <input type='checkbox' name='isMulti' checked={isMulti} onChange={() => setIsMulti(!isMulti)} title='Мультирежим'/>
+        <input type='checkbox' name='isMulti' checked={isMulti} onChange={() => setIsMulti(!isMulti)} title='Мультирежим' />
       </div>
       <SelectTreeView
         multiselect={isMulti}
         placeholder='Select Tree View'
         items={items}
+        onChangeSelected={setSelectedItems}
       />
+      <pre>
+        <code>
+          {JSON.stringify(selectedItems, null, 2)}
+        </code>
+      </pre>
     </div>
   );
 }
