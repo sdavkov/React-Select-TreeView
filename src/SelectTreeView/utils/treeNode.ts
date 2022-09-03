@@ -81,7 +81,7 @@ export function allDeselect(items: TreeViewItem[]) {
 
 export function getAllSelectedLeafs(items: TreeViewItem[], selectedLeafs: TreeViewItem[] = []) {
 	items.forEach(item => {
-		if (!item.children && item.selected)
+		if ((!item.children || item.children.length === 0) && item.selected)
 			selectedLeafs.push({ ...item });
 		else if (item.children) {
 			getAllSelectedLeafs(item.children, selectedLeafs)

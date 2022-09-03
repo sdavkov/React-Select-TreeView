@@ -15,7 +15,7 @@ type TActions = {
 	onSelectTreeNode: (payload: { value: string, lavel: number }) => void;
 	onDeselectTreeNode: (payload: { value: string, lavel: number }) => void;
 	setIsOpen: (payload: boolean) => void;
-	onChangeSelected: (items: TreeViewItem[]) => void;
+	onChangeSelected?: (items: TreeViewItem[]) => void;
 };
 
 export const SelectTreeViewContext = createContext<State & TActions>({
@@ -71,9 +71,9 @@ export const SelectTreeViewProvider: FC<Props> = ({ items, children, multiselect
 		dispatch({ type: Types.SetMultiselect, payload: multiselect })
 	}, [dispatch, multiselect])
 
-	const selectTreeViewMethods = { onExpandTreeNode, onCollapseTreeNode, onSelectTreeNode, onDeselectTreeNode, setIsOpen };
+	const selectTreeViewMethods = { onExpandTreeNode, onCollapseTreeNode, onSelectTreeNode, onDeselectTreeNode, setIsOpen, onChangeSelected };
 
-	const value = { ...state, ...selectTreeViewMethods, onChangeSelected };
+	const value = { ...state, ...selectTreeViewMethods };
 
 	return (
 		<SelectTreeViewContext.Provider value={value}>
