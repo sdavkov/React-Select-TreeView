@@ -1,5 +1,5 @@
 import { SelectTreeViewItem } from "../types";
-import { allDeselect, checkSelectedNeighbours, deselectChildren, deselectParents, findTreeNode, selectChildren, selectParents, setParent } from "../utils/treeNode";
+import { allDeselect, checkSelectedNeighbours, deselectChildren, deselectParents, expandAllChildren, findTreeNode, getAllSelectedLeafs, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
 
 export enum Types {
 	Expand = 'EXPAND',
@@ -62,41 +62,61 @@ export const deselectActionCreator = (payload: { value: string, lavel: number })
 
 export type SelectTreeViewActions = ActionMap<SelectTreeViewPayload>[keyof ActionMap<SelectTreeViewPayload>]
 
-export function treeViewReducer(state: {treeViewItems: SelectTreeViewItem[], multiselect: boolean}, action: SelectTreeViewActions) {
+export type State = {
+	treeViewItems: SelectTreeViewItem[];
+	selectedTreeViewItems: SelectTreeViewItem[];
+	multiselect: boolean;
+	onChangeSelected?: (items: SelectTreeViewItem[]) => void;
+}
+
+export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 	switch (action.type) {
 		case Types.Collapse:
 			const collapsedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
 			if (collapsedItem) {
 				collapsedItem.expanded = false;
 			}
-			return {...state};
+			return { ...state };
 		case Types.Expand:
 			const expandedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
 			if (expandedItem) {
 				expandedItem.expanded = true;
 			}
-			return {...state};
+			return { ...state };
 		case Types.Select:
 			const selectedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
 			if (selectedItem) {
-				if (!state.multiselect) 
+				if (!state.multiselect)
 					allDeselect(state.treeViewItems);
-				selectedItem.selected = true;
-				selectParents(selectedItem);
-				selectedItem.children && selectChildren(selectedItem.children);
+				if (!state.multiselect && getLeafsCount(selectedItem) <= 1) {
+					selectedItem.selected = true;
+					selectedItem.expanded = true;
+					selectParents(selectedItem);
+					selectedItem.children && selectChildren(selectedItem.children);
+				}
+				else if (state.multiselect) {
+					selectedItem.selected = true;
+					selectedItem.expanded = true;
+					selectParents(selectedItem);
+					selectedItem.children && selectChildren(selectedItem.children);
+				}
+				else {
+					//only expand all children
+					expandAllChildren(selectedItem);
+				}
 			}
-			return {...state};
+			return { ...state };
 		case Types.Deselect:
-		const deselectedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
+			const deselectedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
 			if (deselectedItem) {
 				deselectedItem.selected = false;
 				deselectedItem.children && deselectChildren(deselectedItem.children);
 				!checkSelectedNeighbours(deselectedItem) && deselectParents(deselectedItem);
 			}
-			return {...state};
+			return { ...state };
 		case Types.SetParents:
 			setParent(state.treeViewItems)
-			return {...state}
+			return { ...state }
 		default:
 			return state;
 	}

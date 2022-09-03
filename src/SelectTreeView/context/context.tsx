@@ -1,15 +1,12 @@
 import React, { createContext, FC, useCallback, useEffect, useReducer } from "react";
 import { SelectTreeViewItem } from "../types";
-import { collapseActionCreator, deselectActionCreator, expandActionCreator, selectActionCreator, treeViewReducer, Types } from "./reducer";
+import { collapseActionCreator, deselectActionCreator, expandActionCreator, selectActionCreator, State, treeViewReducer, Types } from "./reducer";
 
-type InitialStateType = {
-	treeViewItems: SelectTreeViewItem[];
-	multiselect: boolean;
-}
-
-const initialState: InitialStateType = {
+const initialState: State = {
 	treeViewItems: [],
+	selectedTreeViewItems: [],
 	multiselect: false,
+	onChangeSelected: (items: SelectTreeViewItem[]) => null,
 }
 
 type TActions = {
@@ -19,7 +16,7 @@ type TActions = {
 	onDeselectTreeNode: (payload: { value: string, lavel: number }) => void;
 };
 
-export const SelectTreeViewContext = createContext<InitialStateType & TActions>({
+export const SelectTreeViewContext = createContext<State & TActions>({
 	...initialState,
 	onExpandTreeNode: (payload: { value: string, lavel: number }) => null,
 	onCollapseTreeNode: (payload: { value: string, lavel: number }) => null,
@@ -31,11 +28,12 @@ type Props = {
 	children?: React.ReactNode;
 	items: SelectTreeViewItem[];
 	multiselect?: boolean;
+	onChangeSelected?: (items: SelectTreeViewItem[]) => void;
 };
 
-export const SelectTreeViewProvider: FC<Props> = ({ items, children , multiselect = false}) => {
+export const SelectTreeViewProvider: FC<Props> = ({ items, children , multiselect = false, onChangeSelected}) => {
 
-	const [state, dispatch] = useReducer(treeViewReducer, {treeViewItems: items, multiselect})
+	const [state, dispatch] = useReducer(treeViewReducer, {treeViewItems: items, multiselect, onChangeSelected, selectedTreeViewItems: [] })
 
 	const onExpandTreeNode = useCallback((payload: { value: string, lavel: number }) => {
 		dispatch(expandActionCreator(payload));

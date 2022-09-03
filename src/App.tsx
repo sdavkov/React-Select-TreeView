@@ -195,6 +195,7 @@ function App() {
   return (
     <div className="container">
       <SelectTreeView
+        multiselect={false}
         placeholder='Select Tree View'
         items={items}
       />

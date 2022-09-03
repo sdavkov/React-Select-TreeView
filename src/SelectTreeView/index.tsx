@@ -7,12 +7,12 @@ type Props = {
 	placeholder: string;
 	items: SelectTreeViewItem[];
 	multiselect?: boolean;
-	onSelected?: (items: SelectTreeViewItem[]) => void;
+	onChangeSelected?: (items: SelectTreeViewItem[]) => void;
 }
 
-const SelectTreeView: FC<Props> = ({ placeholder, items, multiselect = false }) => {
+const SelectTreeView: FC<Props> = ({ placeholder, items, multiselect = false, onChangeSelected }) => {
 	return (
-		<SelectTreeViewProvider items={items} multiselect={multiselect}>
+		<SelectTreeViewProvider items={items} multiselect={multiselect} onChangeSelected={onChangeSelected}>
 			<TreeView placeholder={placeholder} />
 		</SelectTreeViewProvider>
 	)
