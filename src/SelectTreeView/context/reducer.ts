@@ -1,5 +1,5 @@
 import { SelectTreeViewItem } from "../types";
-import { allDeselect, checkSelectedNeighbours, deselectChildren, deselectParents, expandAllChildren, findTreeNode, getAllSelectedLeafs, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
+import { allDeselect, checkSelectedNeighbours, deselectChildren, deselectParents, expandAllChildren, findTreeNode, getAllSelectedBrances, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
 
 export enum Types {
 	Expand = 'EXPAND',
@@ -104,6 +104,8 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 					//only expand all children
 					expandAllChildren(selectedItem);
 				}
+				state.selectedTreeViewItems = getAllSelectedBrances(state.treeViewItems);
+				state.onChangeSelected && state.onChangeSelected(state.selectedTreeViewItems);
 			}
 			return { ...state };
 		case Types.Deselect:
@@ -112,6 +114,8 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 				deselectedItem.selected = false;
 				deselectedItem.children && deselectChildren(deselectedItem.children);
 				!checkSelectedNeighbours(deselectedItem) && deselectParents(deselectedItem);
+				state.selectedTreeViewItems = getAllSelectedBrances(state.treeViewItems);
+				state.onChangeSelected && state.onChangeSelected(state.selectedTreeViewItems);
 			}
 			return { ...state };
 		case Types.SetParents:

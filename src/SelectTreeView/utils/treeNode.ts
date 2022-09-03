@@ -89,6 +89,19 @@ export function getAllSelectedLeafs(items: SelectTreeViewItem[], selectedLeafs: 
 	return selectedLeafs;
 }
 
+export function getAllSelectedBrances(items: SelectTreeViewItem[]) {
+	const selectedLeafs = getAllSelectedLeafs(items);
+	const allSelectedBranches: SelectTreeViewItem[] = [];
+	selectedLeafs.forEach(item => {
+			while (item.parent) {
+				item = { ...item.parent, children: [item] };
+			}
+			allSelectedBranches.push(item);
+
+	})
+	return allSelectedBranches;
+}
+
 export function findTreeNode(
 	items: SelectTreeViewItem[] | undefined,
 	value: string, lavel: number,
