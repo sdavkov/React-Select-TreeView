@@ -18,8 +18,7 @@ const SelectedItem: FC<Props> = ({ item }) => {
 
 	const deselectItem = useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		event.stopPropagation();
-		const lowValueLavel = getLowLavelValue(item);
-		onDeselectTreeNode(lowValueLavel);
+		onDeselectTreeNode(getLowLavelValue(item));
 	}, [item, onDeselectTreeNode])
 
 	return (
