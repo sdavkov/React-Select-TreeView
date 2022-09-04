@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import styles from './TreeView.module.scss'
 import Toolbar from '../Toolbar/Toolbar';
 import TreeNode from '../TreeNode/TreeNode';
@@ -13,15 +13,31 @@ type Props = {
 
 const TreeView: FC<Props> = ({ placeholder }) => {
   const { treeViewItems, selectedTreeViewItems, isOpen, setIsOpen, clearSelectedTreeViewItems } = React.useContext(SelectTreeViewContext);
-  const nodeRef = React.useRef(null)
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const wrapperRef = React.useRef<HTMLDivElement>(null)
 
   function onClearSelectedTreeViewItems(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.stopPropagation();
     clearSelectedTreeViewItems();
   }
 
+  useEffect(() => {
+    
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [wrapperRef, setIsOpen])
+
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} ref={wrapperRef}>
       <div
         className={styles.select}
         role='button'
@@ -46,7 +62,7 @@ const TreeView: FC<Props> = ({ placeholder }) => {
         </div>
       </div>
       <CSSTransition
-        nodeRef={nodeRef}
+        nodeRef={dropdownRef}
         in={isOpen}
         timeout={200}
         unmountOnExit
@@ -56,7 +72,7 @@ const TreeView: FC<Props> = ({ placeholder }) => {
           exit: styles.exit,
           exitActive: styles.exit_active,
         }}>
-        <div className={styles.dropdown} ref={nodeRef}>
+        <div className={styles.dropdown} ref={dropdownRef}>
           <Toolbar />
           <ul>
             {treeViewItems.map((item => (
