@@ -132,3 +132,15 @@ export function findTreeNode(
 	}
 	return undefined;
 }
+
+export function getLowLavelValue(item: SelectedTreeViewItem) {
+	let value = item.value;
+	let lavel = 0;
+	let children = item.children;
+	while (children && children.length > 0) {
+		value = children[0].value;
+		lavel++;
+		children = children[0].children;
+	}
+	return { value, lavel };
+}

@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useMemo } from 'react'
 import { SelectTreeViewContext } from '../context/context';
 import { SelectedTreeViewItem } from '../types'
+import { getLowLavelValue } from '../utils/treeNode';
 import styles from './SelectedItem.module.scss'
 
 type Props = {
@@ -23,15 +24,8 @@ const SelectedItem: FC<Props> = ({ item }) => {
 
 	const deselectItem = useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		event.stopPropagation();
-		let value = item.value;
-		let lavel = 0;
-		let children = item.children;
-		while(children && children.length > 0) {
-			value = children[0].value;
-			lavel++;
-			children = children[0].children;
-		}
-		onDeselectTreeNode({value, lavel});
+		const lowValueLavel = getLowLavelValue(item);
+		onDeselectTreeNode(lowValueLavel);
 	}, [item, onDeselectTreeNode])
 
 	return (
