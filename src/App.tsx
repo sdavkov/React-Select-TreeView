@@ -196,9 +196,16 @@ function App() {
   const [selectedItems, setSelectedItems] = useState<TreeViewItem[]>([])
   return (
     <div className="container">
-      <div className='toolbar'>
-        <label htmlFor="isMulti">Мультиселект</label>
-        <input type='checkbox' name='isMulti' checked={isMulti} onChange={() => setIsMulti(!isMulti)} title='Мультирежим' />
+      <div>
+        <div className='toolbar'>
+          <label htmlFor="isMulti">Мультиселект</label>
+          <input type='checkbox' name='isMulti' checked={isMulti} onChange={() => setIsMulti(!isMulti)} title='Мультирежим' />
+        </div>
+        <pre>
+          <code>
+            {JSON.stringify(selectedItems, null, 2)}
+          </code>
+        </pre>
       </div>
       <SelectTreeView
         multiselect={isMulti}
@@ -206,11 +213,6 @@ function App() {
         items={items}
         onChangeSelected={setSelectedItems}
       />
-      <pre>
-        <code>
-          {JSON.stringify(selectedItems, null, 2)}
-        </code>
-      </pre>
     </div>
   );
 }

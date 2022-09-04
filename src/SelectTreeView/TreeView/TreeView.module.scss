@@ -9,6 +9,7 @@
 .wrapper {
 	position: relative;
 	margin-bottom: 10px;
+	width: 100%;
 
 	.select {
 		@include styling();
