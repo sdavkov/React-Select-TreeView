@@ -20,6 +20,8 @@ code {
 
 .container > div:first-child {
   flex: 0 0 300px;
+  background-color: rgb(240, 238, 234);
+  padding: 10px;
 }
 
 .toolbar {
