@@ -36,6 +36,20 @@ export function expandAllChildren(item: TreeViewItem) {
 	item.children && item.children.forEach(expandAllChildren);
 }
 
+export function expandAll(items: TreeViewItem[]) {
+	items.forEach(item => {
+		item.expanded = true;
+		item.children && expandAll(item.children);
+	})
+}
+
+export function collapseAll(items: TreeViewItem[]) {
+	items.forEach(item => {
+		item.expanded = false;
+		item.children && collapseAll(item.children);
+	})
+}
+
 export function getLeafsCount(item: TreeViewItem) {
 	let count = 0;
 	if (item.children) {

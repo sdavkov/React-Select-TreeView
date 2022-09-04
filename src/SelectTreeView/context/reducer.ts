@@ -1,5 +1,5 @@
 import { SelectedTreeViewItem, TreeViewItem } from "../types";
-import { allDeselect, checkSelectedNeighbours, deselectChildren, deselectParents, expandAllChildren, findTreeNode, getAllSelectedBrances, getAllSelectedLeafs, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
+import { allDeselect, checkSelectedNeighbours, collapseAll, deselectChildren, deselectParents, expandAll, expandAllChildren, findTreeNode, getAllSelectedBrances, getAllSelectedLeafs, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
 
 export enum Types {
 	Expand = 'EXPAND',
@@ -10,6 +10,8 @@ export enum Types {
 	SetMultiselect = 'SETMULTISELECT',
 	SetIsOpen = 'SETISOPEN',
 	ClearSelectedItems = 'CLEARSELECTEDNITEMS',
+	ExpandAll = 'EXPANDALL',
+	CollapseAll = 'COLLAPSEALL',
 }
 
 type ActionMap<M extends { [index: string]: any }> = {
@@ -44,6 +46,8 @@ type SelectTreeViewPayload = {
 	[Types.SetIsOpen]: boolean;
 	[Types.SetParents]: undefined;
 	[Types.ClearSelectedItems]: undefined;
+	[Types.ExpandAll]: undefined;
+	[Types.CollapseAll]: undefined;
 }
 
 export type SelectTreeViewActions = ActionMap<SelectTreeViewPayload>[keyof ActionMap<SelectTreeViewPayload>]
@@ -63,12 +67,18 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 				collapsedItem.expanded = false;
 			}
 			return { ...state };
+		case Types.CollapseAll:
+			collapseAll(state.treeViewItems);
+			return { ...state }
 		case Types.Expand:
 			const expandedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
 			if (expandedItem) {
 				expandedItem.expanded = true;
 			}
 			return { ...state };
+		case Types.ExpandAll:
+			expandAll(state.treeViewItems);
+			return { ...state }
 		case Types.Select:
 			const selectedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
 			if (selectedItem) {
@@ -124,7 +134,7 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 			return { ...state, isOpen: action.payload }
 		case Types.ClearSelectedItems:
 			allDeselect(state.treeViewItems);
-			return {...state, selectedTreeViewItems: []}
+			return { ...state, selectedTreeViewItems: [] }
 		default:
 			return state;
 	}

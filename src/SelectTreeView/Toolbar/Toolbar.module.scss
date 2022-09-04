@@ -1,4 +1,10 @@
 .toolbar {
 	display: flex;
 	align-items: center;
+	margin-bottom: 10px;
+
+	& > div {
+		margin-right: 20px;
+		cursor: pointer;
+	}
 }
