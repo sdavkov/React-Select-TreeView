@@ -21,7 +21,8 @@ const SelectedItem: FC<Props> = ({ item }) => {
 		return names.reverse().join(' > ');
 	}, [item])
 
-	const deselectItem = useCallback(() => {
+	const deselectItem = useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+		event.stopPropagation();
 		let value = item.value;
 		let lavel = 0;
 		let children = item.children;
