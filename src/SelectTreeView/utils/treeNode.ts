@@ -144,3 +144,13 @@ export function getLowLavelValue(item: SelectedTreeViewItem) {
 	}
 	return { value, lavel };
 }
+
+export function getSelectedItemLabel(item: SelectedTreeViewItem) {
+	const names = [item.label];
+	let children = item.children;
+	while (children && children.length > 0) {
+		names.push(children[0].label);
+		children = children[0].children;
+	}
+	return names.reverse().join(' > ');
+}
