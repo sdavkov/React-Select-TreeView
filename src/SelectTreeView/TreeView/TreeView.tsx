@@ -4,6 +4,7 @@ import Toolbar from '../Toolbar/Toolbar';
 import TreeNode from '../TreeNode/TreeNode';
 import { SelectTreeViewContext } from '../context/context';
 import { CSSTransition } from 'react-transition-group';
+import SelectedItem from '../SelectedItem/SelectedItem';
 
 type Props = {
   placeholder: string;
@@ -26,9 +27,11 @@ const TreeView: FC<Props> = ({ placeholder }) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className={styles.select__title}>
-          {selectedTreeViewItems.length === 0 ? placeholder :
+          {selectedTreeViewItems.length === 0 ?
+            placeholder
+            :
             selectedTreeViewItems.map(item => (
-              <div key={item.value}>{item.label}</div>
+              <SelectedItem key={item.value} item={item} />
             ))
           }
         </div>
