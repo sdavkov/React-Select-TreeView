@@ -14,13 +14,13 @@ const TreeNode: FC<Props> = ({ node }) => {
 
 	function onNodeToggle(checked: boolean) {
 		if (checked)
-			onCollapseTreeNode({ value: node.value, lavel: node.lavel! })
+			onCollapseTreeNode({ value: node.value, level: node.level! })
 		else
-			onExpandTreeNode({ value: node.value, lavel: node.lavel! })
+			onExpandTreeNode({ value: node.value, level: node.level! })
 	}
 
 	function changeSelection() {
-		node.selected ? onDeselectTreeNode({ value: node.value, lavel: node.lavel! }) : onSelectTreeNode({ value: node.value, lavel: node.lavel! });
+		node.selected ? onDeselectTreeNode({ value: node.value, level: node.level! }) : onSelectTreeNode({ value: node.value, level: node.level! });
 	}
 
 	function onNodeClick() {

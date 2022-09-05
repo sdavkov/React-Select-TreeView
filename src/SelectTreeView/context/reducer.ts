@@ -1,5 +1,5 @@
 import { SelectedTreeViewItem, TreeViewItem } from "../types";
-import { allDeselect, checkSelectedNeighbours, collapseAll, deselectChildren, deselectParents, expandAll, expandAllChildren, findTreeNode, getAllSelectedBrances, getAllSelectedLeafs, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
+import { allDeselect, checkSelectedNeighbours, collapseAll, deselectChildren, deselectParents, expandAll, expandAllChildren, findTreeNode, getAllSelectedLeafs, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
 
 export enum Types {
 	SetItems = 'SETITEMS',
@@ -29,19 +29,19 @@ type ActionMap<M extends { [index: string]: any }> = {
 type SelectTreeViewPayload = {
 	[Types.Collapse]: {
 		value: string;
-		lavel: number;
+		level: number;
 	};
 	[Types.Expand]: {
 		value: string;
-		lavel: number;
+		level: number;
 	};
 	[Types.Select]: {
 		value: string;
-		lavel: number;
+		level: number;
 	};
 	[Types.Deselect]: {
 		value: string;
-		lavel: number;
+		level: number;
 	};
 	[Types.SetMultiselect]: boolean;
 	[Types.SetIsOpen]: boolean;
@@ -68,7 +68,7 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 			state.selectedTreeViewItems = [];
 			return { ...state };
 		case Types.Collapse:
-			const collapsedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
+			const collapsedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.level);
 			if (collapsedItem) {
 				collapsedItem.expanded = false;
 			}
@@ -77,7 +77,7 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 			collapseAll(state.treeViewItems);
 			return { ...state }
 		case Types.Expand:
-			const expandedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
+			const expandedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.level);
 			if (expandedItem) {
 				expandedItem.expanded = true;
 			}
@@ -86,7 +86,7 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 			expandAll(state.treeViewItems);
 			return { ...state }
 		case Types.Select:
-			const selectedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
+			const selectedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.level);
 			if (selectedItem) {
 				if (!state.multiselect)
 					allDeselect(state.treeViewItems);
@@ -106,16 +106,16 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 					//only expand all children
 					expandAllChildren(selectedItem);
 				}
-				state.selectedTreeViewItems = getAllSelectedBrances(state.treeViewItems);
+				state.selectedTreeViewItems = getAllSelectedLeafs(state.treeViewItems);
 			}
 			return { ...state };
 		case Types.Deselect:
-			const deselectedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
+			const deselectedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.level);
 			if (deselectedItem) {
 				deselectedItem.selected = false;
 				deselectedItem.children && deselectChildren(deselectedItem.children);
 				!checkSelectedNeighbours(deselectedItem) && deselectParents(deselectedItem);
-				state.selectedTreeViewItems = getAllSelectedBrances(state.treeViewItems);
+				state.selectedTreeViewItems = getAllSelectedLeafs(state.treeViewItems);
 			}
 			return { ...state };
 		case Types.SetParents:
@@ -126,14 +126,14 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 			const selectedLeafs = getAllSelectedLeafs(state.treeViewItems);
 			if (!state.multiselect && selectedLeafs.length > 0) {
 				allDeselect(state.treeViewItems);
-				if (selectedLeafs[0].lavel) {
-					const item = findTreeNode(state.treeViewItems, selectedLeafs[0].value, selectedLeafs[0].lavel);
+				if (selectedLeafs[0].level) {
+					const item = findTreeNode(state.treeViewItems, selectedLeafs[0].value, selectedLeafs[0].level);
 					if (item) {
 						item.selected = true;
 						selectParents(item);
 					}
 				}
-				state.selectedTreeViewItems = getAllSelectedBrances(state.treeViewItems);
+				state.selectedTreeViewItems = getAllSelectedLeafs(state.treeViewItems);
 			}
 			return { ...state }
 		case Types.SetIsOpen:

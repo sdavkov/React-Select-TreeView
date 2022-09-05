@@ -1,7 +1,7 @@
 export type TreeViewItem = {
 	label: string;
 	value: string;
-	lavel?: number;
+	level?: number;
 	selected?: boolean;
 	expanded?: boolean;
 	parent?: TreeViewItem;
@@ -11,5 +11,5 @@ export type TreeViewItem = {
 export type SelectedTreeViewItem = {
 	label: string;
 	value: string;
-	child?: SelectedTreeViewItem;
+	level: number;
 }

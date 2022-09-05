@@ -5,7 +5,6 @@ import TreeNode from '../TreeNode/TreeNode';
 import { SelectTreeViewContext } from '../context/context';
 import { CSSTransition } from 'react-transition-group';
 import SelectedItem from '../SelectedItem/SelectedItem';
-import { getLowLavelValue } from '../utils/treeNode';
 
 type Props = {
   placeholder: string;
@@ -48,7 +47,7 @@ const TreeView: FC<Props> = ({ placeholder }) => {
             placeholder
             :
             selectedTreeViewItems.map(item => (
-              <SelectedItem key={getLowLavelValue(item).value} item={item} />
+              <SelectedItem key={item.value} item={item} />
             ))
           }
         </div>

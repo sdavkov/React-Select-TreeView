@@ -73,13 +73,13 @@ export function checkSelectedNeighbours(item: TreeViewItem) {
 	return false;
 }
 
-export function setParent(items: TreeViewItem[], parent: TreeViewItem | undefined = undefined, lavel: number = 0) {
+export function setParent(items: TreeViewItem[], parent: TreeViewItem | undefined = undefined, level: number = 0) {
 	items.forEach(item => {
 		if (parent)
 			item.parent = parent;
-		item.lavel = lavel;
+		item.level = level;
 		if (item.children) {
-			setParent(item.children, item, lavel + 1)
+			setParent(item.children, item, level + 1)
 		}
 	});
 }
@@ -93,10 +93,14 @@ export function allDeselect(items: TreeViewItem[]) {
 	});
 }
 
-export function getAllSelectedLeafs(items: TreeViewItem[], selectedLeafs: TreeViewItem[] = []) {
+export function getAllSelectedLeafs(items: TreeViewItem[], selectedLeafs: SelectedTreeViewItem[] = []) {
 	items.forEach(item => {
 		if ((!item.children || item.children.length === 0) && item.selected)
-			selectedLeafs.push({ ...item });
+			selectedLeafs.push({
+				value: item.value,
+				label: item.label,
+				level: item.level!,
+			});
 		else if (item.children) {
 			getAllSelectedLeafs(item.children, selectedLeafs)
 		}
@@ -104,67 +108,23 @@ export function getAllSelectedLeafs(items: TreeViewItem[], selectedLeafs: TreeVi
 	return selectedLeafs;
 }
 
-function convertToSelected(items: TreeViewItem[]): SelectedTreeViewItem[] {
-	return items.map(item => (
-		{
-			value: item.value,
-			label: item.label,
-			children: item.children ? convertToSelected(item.children) : undefined,
-		}))
-}
-
-export function getAllSelectedBrances(items: TreeViewItem[]) {
-	const selectedLeafs = getAllSelectedLeafs(items);
-	const allSelectedBranches: TreeViewItem[] = [];
-	selectedLeafs.forEach(item => {
-		while (item.parent) {
-			item = { ...item.parent, children: [item] };
-		}
-		allSelectedBranches.push(item);
-
-	})
-	return convertToSelected(allSelectedBranches);
-}
-
 export function findTreeNode(
 	items: TreeViewItem[] | undefined,
 	value: string,
-	lavel: number,
-	currentlavel: number = 0
+	level: number,
+	currentlevel: number = 0
 ): TreeViewItem | undefined {
 	if (!items)
 		return undefined;
-	if (currentlavel === lavel) {
+	if (currentlevel === level) {
 		return items.find(item => item.value === value);
 	} else {
 		for (let i = 0; i < items.length; i++) {
-			const findedItem = findTreeNode(items[i].children, value, lavel, currentlavel + 1);
+			const findedItem = findTreeNode(items[i].children, value, level, currentlevel + 1);
 			if (findedItem) {
 				return findedItem;
 			}
 		}
 	}
 	return undefined;
-}
-
-export function getLowLavelValue(item: SelectedTreeViewItem) {
-	let value = item.value;
-	let lavel = 0;
-	let child = item.child;
-	while (child) {
-		value = child.value;
-		lavel++;
-		child = child.child;
-	}
-	return { value, lavel };
-}
-
-export function getSelectedItemLabel(item: SelectedTreeViewItem) {
-	const names = [item.label];
-	let child = item.child;
-	while (child) {
-		names.push(child.label);
-		child = child.child;
-	}
-	return names.reverse().join(' > ');
 }
