@@ -19,6 +19,7 @@ type TActions = {
 	onChangeSelected?: (items: TreeViewItem[]) => void;
 	collapseAllTreeNodes: () => void;
 	expandAllTreeNodes: () => void;
+	setTreeNodeItems: (payload: TreeViewItem[]) => void;
 };
 
 export const SelectTreeViewContext = createContext<State & TActions>({
@@ -32,6 +33,7 @@ export const SelectTreeViewContext = createContext<State & TActions>({
 	onChangeSelected: (items: TreeViewItem[]) => null,
 	collapseAllTreeNodes: () => null,
 	expandAllTreeNodes: () => null,
+	setTreeNodeItems: (payload: TreeViewItem[]) => null,
 });
 
 type Props = {
@@ -84,17 +86,26 @@ export const SelectTreeViewProvider: FC<Props> = ({ items, children, multiselect
 	},
 		[dispatch]);
 
+	const setTreeNodeItems = useCallback((payload: TreeViewItem[]) => {
+		dispatch({ type: Types.SetItems, payload });
+	},
+		[dispatch]);
+
 	useEffect(() => {
 		dispatch({ type: Types.SetParents })
-	}, [dispatch])
+	}, [dispatch]);
 
 	useEffect(() => {
 		dispatch({ type: Types.SetMultiselect, payload: multiselect })
-	}, [dispatch, multiselect])
+	}, [dispatch, multiselect]);
 
 	useEffect(() => {
 		onChangeSelected && onChangeSelected(state.selectedTreeViewItems)
-	}, [state.selectedTreeViewItems, onChangeSelected])
+	}, [state.selectedTreeViewItems, onChangeSelected]);
+
+	useEffect(() => {
+		setTreeNodeItems(items);
+	}, [items, setTreeNodeItems]);
 
 	const selectTreeViewMethods = {
 		onExpandTreeNode,
@@ -105,7 +116,8 @@ export const SelectTreeViewProvider: FC<Props> = ({ items, children, multiselect
 		clearSelectedTreeViewItems,
 		onChangeSelected,
 		collapseAllTreeNodes,
-		expandAllTreeNodes
+		expandAllTreeNodes,
+		setTreeNodeItems
 	};
 
 	const value = { ...state, ...selectTreeViewMethods };

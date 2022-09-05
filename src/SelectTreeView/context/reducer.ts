@@ -2,6 +2,7 @@ import { SelectedTreeViewItem, TreeViewItem } from "../types";
 import { allDeselect, checkSelectedNeighbours, collapseAll, deselectChildren, deselectParents, expandAll, expandAllChildren, findTreeNode, getAllSelectedBrances, getAllSelectedLeafs, getLeafsCount, selectChildren, selectParents, setParent } from "../utils/treeNode";
 
 export enum Types {
+	SetItems = 'SETITEMS',
 	Expand = 'EXPAND',
 	Collapse = 'COLLAPSE',
 	Select = 'SELECT',
@@ -48,6 +49,7 @@ type SelectTreeViewPayload = {
 	[Types.ClearSelectedItems]: undefined;
 	[Types.ExpandAll]: undefined;
 	[Types.CollapseAll]: undefined;
+	[Types.SetItems]: TreeViewItem[];
 }
 
 export type SelectTreeViewActions = ActionMap<SelectTreeViewPayload>[keyof ActionMap<SelectTreeViewPayload>]
@@ -61,6 +63,10 @@ export type State = {
 
 export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 	switch (action.type) {
+		case Types.SetItems:
+			state.treeViewItems = action.payload;
+			state.selectedTreeViewItems = [];
+			return { ...state };
 		case Types.Collapse:
 			const collapsedItem = findTreeNode(state.treeViewItems, action.payload.value, action.payload.lavel);
 			if (collapsedItem) {
