@@ -150,21 +150,21 @@ export function findTreeNode(
 export function getLowLavelValue(item: SelectedTreeViewItem) {
 	let value = item.value;
 	let lavel = 0;
-	let children = item.children;
-	while (children && children.length > 0) {
-		value = children[0].value;
+	let child = item.child;
+	while (child) {
+		value = child.value;
 		lavel++;
-		children = children[0].children;
+		child = child.child;
 	}
 	return { value, lavel };
 }
 
 export function getSelectedItemLabel(item: SelectedTreeViewItem) {
 	const names = [item.label];
-	let children = item.children;
-	while (children && children.length > 0) {
-		names.push(children[0].label);
-		children = children[0].children;
+	let child = item.child;
+	while (child) {
+		names.push(child.label);
+		child = child.child;
 	}
 	return names.reverse().join(' > ');
 }

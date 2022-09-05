@@ -92,8 +92,9 @@ export const SelectTreeViewProvider: FC<Props> = ({ items, children, multiselect
 		[dispatch]);
 
 	useEffect(() => {
+		setTreeNodeItems(items);
 		dispatch({ type: Types.SetParents })
-	}, [dispatch]);
+	}, [items, setTreeNodeItems, dispatch])
 
 	useEffect(() => {
 		dispatch({ type: Types.SetMultiselect, payload: multiselect })
