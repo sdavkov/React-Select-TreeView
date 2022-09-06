@@ -73,17 +73,6 @@ export function checkSelectedNeighbours(item: TreeViewItem) {
 	return false;
 }
 
-export function setParent(items: TreeViewItem[], parent: TreeViewItem | undefined = undefined, level: number = 0) {
-	items.forEach(item => {
-		if (parent)
-			item.parent = parent;
-		item.level = level;
-		if (item.children) {
-			setParent(item.children, item, level + 1)
-		}
-	});
-}
-
 export function allDeselect(items: TreeViewItem[]) {
 	items.forEach(item => {
 		item.selected = false;
@@ -96,35 +85,47 @@ export function allDeselect(items: TreeViewItem[]) {
 export function getAllSelectedLeafs(items: TreeViewItem[], selectedLeafs: SelectedTreeViewItem[] = []) {
 	items.forEach(item => {
 		if ((!item.children || item.children.length === 0) && item.selected)
-			selectedLeafs.push({
-				value: item.value,
-				label: item.label,
+		selectedLeafs.push({
+			value: item.value,
+			label: item.label,
 				level: item.level!,
 			});
-		else if (item.children) {
-			getAllSelectedLeafs(item.children, selectedLeafs)
-		}
-	})
-	return selectedLeafs;
-}
-
-export function findTreeNode(
-	items: TreeViewItem[] | undefined,
-	value: string,
-	level: number,
-	currentlevel: number = 0
-): TreeViewItem | undefined {
-	if (!items)
-		return undefined;
-	if (currentlevel === level) {
-		return items.find(item => item.value === value);
-	} else {
-		for (let i = 0; i < items.length; i++) {
-			const findedItem = findTreeNode(items[i].children, value, level, currentlevel + 1);
-			if (findedItem) {
-				return findedItem;
+			else if (item.children) {
+				getAllSelectedLeafs(item.children, selectedLeafs)
 			}
+		})
+		return selectedLeafs;
+	}
+	
+	export function findTreeNode(
+		items: TreeViewItem[] | undefined,
+		value: string,
+		level: number,
+		currentlevel: number = 0
+		): TreeViewItem | undefined {
+			if (!items)
+			return undefined;
+			if (currentlevel === level) {
+				return items.find(item => item.value === value);
+			} else {
+				for (let i = 0; i < items.length; i++) {
+					const findedItem = findTreeNode(items[i].children, value, level, currentlevel + 1);
+					if (findedItem) {
+						return findedItem;
+					}
 		}
 	}
 	return undefined;
+}
+
+export function setParent(items: TreeViewItem[], parent: TreeViewItem | undefined = undefined, level: number = 0) {
+	items.forEach(item => {
+		if (parent)
+			item.parent = parent;
+		item.level = level;
+		if (item.children) {
+			setParent(item.children, item, level + 1)
+		}
+	});
+	return items;
 }

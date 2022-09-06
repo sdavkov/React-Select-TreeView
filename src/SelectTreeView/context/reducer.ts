@@ -7,7 +7,6 @@ export enum Types {
 	Collapse = 'COLLAPSE',
 	Select = 'SELECT',
 	Deselect = 'DESELECT',
-	SetParents = 'SETPARENTS',
 	SetMultiselect = 'SETMULTISELECT',
 	SetIsOpen = 'SETISOPEN',
 	ClearSelectedItems = 'CLEARSELECTEDNITEMS',
@@ -45,7 +44,6 @@ type SelectTreeViewPayload = {
 	};
 	[Types.SetMultiselect]: boolean;
 	[Types.SetIsOpen]: boolean;
-	[Types.SetParents]: undefined;
 	[Types.ClearSelectedItems]: undefined;
 	[Types.ExpandAll]: undefined;
 	[Types.CollapseAll]: undefined;
@@ -64,7 +62,7 @@ export type State = {
 export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 	switch (action.type) {
 		case Types.SetItems:
-			state.treeViewItems = action.payload;
+			state.treeViewItems = setParent(action.payload);
 			state.selectedTreeViewItems = [];
 			return { ...state };
 		case Types.Collapse:
@@ -118,9 +116,6 @@ export function treeViewReducer(state: State, action: SelectTreeViewActions) {
 				state.selectedTreeViewItems = getAllSelectedLeafs(state.treeViewItems);
 			}
 			return { ...state };
-		case Types.SetParents:
-			setParent(state.treeViewItems)
-			return { ...state }
 		case Types.SetMultiselect:
 			state.multiselect = action.payload;
 			const selectedLeafs = getAllSelectedLeafs(state.treeViewItems);
