@@ -7,7 +7,7 @@ type Props = {
 	placeholder: string;
 	items: TreeViewItem[];
 	multiselect?: boolean;
-	onChangeSelected?: (items: TreeViewItem[]) => void;
+	onChangeSelected?: (items: SelectedTreeViewItem[]) => void;
 	value?: SelectedTreeViewItem[];
 }
 
@@ -24,4 +24,4 @@ const SelectTreeView: FC<Props> = ({ placeholder, items, multiselect = false, on
 	)
 }
 
-export default SelectTreeView
+export default React.memo(SelectTreeView)
